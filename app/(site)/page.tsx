@@ -3,6 +3,8 @@ import Header from "@/components/header";
 import ListItem from "@/components/listItem";
 import PageContent from "./components/pageContent";
 
+import Greeting from "@/components/greeting";
+
 export const revalidate = 0;
 
 export default async function Home() {
@@ -13,7 +15,7 @@ export default async function Home() {
     <div className="bg-neutral-900 rounded-lg h-full w-full overflow-hidden overflow-y-auto">
       <Header>
         <div className="mb-2">
-          <h1 className="text-white text-3xl text-semibold">Welcome Back</h1>
+          <Greeting />
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 mt-4">
             <ListItem 
               image="/images/liked.png"

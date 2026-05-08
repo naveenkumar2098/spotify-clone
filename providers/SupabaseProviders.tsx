@@ -17,7 +17,7 @@ const SupabaseProvider: React.FC<SupabaseProviderProps> = ({
     )
 
     return (
-        <SessionContextProvider supabaseClient={supabaseClient}>
+        <SessionContextProvider supabaseClient={supabaseClient as any}>
             {children}
         </SessionContextProvider>
     )

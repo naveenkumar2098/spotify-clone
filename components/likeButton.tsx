@@ -4,9 +4,11 @@ import useAuthModal from "@/hooks/useAuthModal";
 import { useUser } from "@/hooks/useUser";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+// @ts-ignore
+import anime from "animejs";
 
 interface LikeButtonProps {
     songId: string;
@@ -21,6 +23,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 
     const authModal = useAuthModal();
     const { user } = useUser();
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const [isLiked, setIsLiked] = useState(false);
 
@@ -45,11 +48,32 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         fetchData();
     }, [songId, supabaseClient, user?.id]);
 
+    useEffect(() => {
+        const handleStatusChange = (e: CustomEvent) => {
+            if (String(e.detail.songId) === String(songId)) {
+                setIsLiked(e.detail.isLiked);
+            }
+        };
+
+        window.addEventListener('liked-status-changed', handleStatusChange as EventListener);
+        return () => window.removeEventListener('liked-status-changed', handleStatusChange as EventListener);
+    }, [songId]);
+
     const Icon = isLiked ? AiFillHeart : AiOutlineHeart;
 
     const handleLike = async () => {
         if(!user) {
             return authModal.onOpen();
+        }
+
+        // Trigger pop animation
+        if (buttonRef.current) {
+            anime({
+                targets: buttonRef.current,
+                scale: [1.4, 1],
+                duration: 600,
+                easing: 'easeOutElastic(1, .5)'
+            });
         }
 
         if(isLiked) {
@@ -63,6 +87,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
                 toast.error(error.message);
             } else {
                 setIsLiked(false);
+                window.dispatchEvent(new CustomEvent('liked-status-changed', { detail: { songId, isLiked: false } }));
             }
         } else {
             const { error } = await supabaseClient
@@ -76,6 +101,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
                 toast.error(error.message);
             } else {
                 setIsLiked(true);
+                window.dispatchEvent(new CustomEvent('liked-status-changed', { detail: { songId, isLiked: true } }));
                 toast.success('Liked!');
             }
         }
@@ -85,6 +111,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 
     return (
         <button
+            ref={buttonRef}
             onClick={handleLike} 
             className="hover:opacity-75 transition"
         >

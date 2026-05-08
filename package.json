@@ -9,13 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-slider": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@supabase/auth-helpers-nextjs": "^0.9.0",
     "@supabase/auth-helpers-react": "^0.4.2",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
-    "next": "14.1.0",
+    "@types/animejs": "^3.1.13",
+    "animejs": "^3.2.2",
+    "next": "^14.2.35",
     "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",
@@ -38,7 +44,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8",
-    "supabase": "^1.145.4",
+    "supabase": "^2.98.2",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }

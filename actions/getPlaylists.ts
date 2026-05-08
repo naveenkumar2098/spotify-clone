@@ -1,9 +1,9 @@
-import { Song } from "@/types";
+import { Playlist } from "@/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "@/types_db";
 
-const getLikedSongs = async (): Promise<Song[]> => {
+const getPlaylists = async (): Promise<Playlist[]> => {
     const supabase = createServerComponentClient<Database>({
         cookies: cookies
     });
@@ -19,8 +19,8 @@ const getLikedSongs = async (): Promise<Song[]> => {
     }
 
     const { data, error } = await supabase
-        .from('liked_songs')
-        .select('*, songs(*)')
+        .from('playlists')
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', {ascending: false});
 
@@ -29,13 +29,7 @@ const getLikedSongs = async (): Promise<Song[]> => {
         return [];
     }
 
-    if(!data) {
-        return [];
-    }
-
-    return data.map((item: any) => ({
-        ...item.songs
-    })) as any;
+    return (data as any) || [];
 };
 
-export default getLikedSongs;
+export default getPlaylists;
