@@ -11,7 +11,7 @@ import Input from "./input";
 import Button from "./button";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@/providers/SupabaseProviders";
 import { useRouter } from "next/navigation";
 
 const UploadModal = () => {

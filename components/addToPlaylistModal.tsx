@@ -5,7 +5,7 @@ import Modal from "./modal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@/providers/SupabaseProviders";
 import { useRouter } from "next/navigation";
 import { Playlist } from "@/types";
 

@@ -9,7 +9,7 @@ import Input from "@/components/input";
 import toast from "react-hot-toast";
 import uniqid from "uniqid"
 import { IMAGE_ACCEPT, validateImageFile } from "@/libs/validateFile";;
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@/providers/SupabaseProviders";
 
 const AccountContent = () => {
     const router = useRouter();

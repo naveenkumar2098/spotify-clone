@@ -8,14 +8,15 @@ import Image from "next/image";
 export const revalidate = 0;
 
 interface PlaylistProps {
-    params: {
+    params: Promise<{
         playlistId: string;
-    }
+    }>
 }
 
 const Playlist = async ({ params }: PlaylistProps) => {
-    const playlist = await getPlaylistById(params.playlistId);
-    const songs = await getPlaylistSongs(params.playlistId);
+    const { playlistId } = await params;
+    const playlist = await getPlaylistById(playlistId);
+    const songs = await getPlaylistSongs(playlistId);
 
     if (!playlist) {
         return (

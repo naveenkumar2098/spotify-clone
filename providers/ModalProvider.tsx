@@ -8,7 +8,7 @@ import LyricsModal from "@/components/lyricsModal";
 import QueueModal from "@/components/queueModal";
 import ResetPasswordModal from "@/components/resetPasswordModal";
 import { useEffect, useState } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@/providers/SupabaseProviders";
 import useResetPasswordModal from "@/hooks/useResetPasswordModal";
 
 const ModalProvider = () => {
