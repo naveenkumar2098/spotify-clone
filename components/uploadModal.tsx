@@ -1,6 +1,8 @@
 "use client";
 
 import uniqid from "uniqid"
+import sanitizeFileName from "@/libs/sanitizeFileName";
+import { IMAGE_ACCEPT, validateImageFile, validateSongFile } from "@/libs/validateFile";
 import useUploadModal from "@/hooks/useUploadModal";
 import Modal from "./modal";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -46,7 +48,19 @@ const UploadModal = () => {
                 return;
             }
 
+            const songValidationError = validateSongFile(songFile);
+            if(songValidationError) {
+                toast.error(songValidationError);
+                return;
+            }
+            const imageValidationError = validateImageFile(imageFile);
+            if(imageValidationError) {
+                toast.error(imageValidationError);
+                return;
+            }
+
             const uniqueId = uniqid();
+            const safeTitle = sanitizeFileName(values.title);
 
             // upload song
             const {
@@ -55,7 +69,7 @@ const UploadModal = () => {
             } = await supabaseClient
                     .storage
                     .from('songs')
-                    .upload(`song-${values.title}-${uniqueId}`, songFile, {
+                    .upload(`song-${safeTitle}-${uniqueId}`, songFile, {
                         cacheControl: '3600',
                         upsert: false
                     });
@@ -72,7 +86,7 @@ const UploadModal = () => {
             } = await supabaseClient
                     .storage
                     .from('images')
-                    .upload(`image-${values.title}-${uniqueId}`, imageFile, {
+                    .upload(`image-${safeTitle}-${uniqueId}`, imageFile, {
                         cacheControl: '3600',
                         upsert: false
                     });
@@ -148,7 +162,7 @@ const UploadModal = () => {
                     <Input
                         id="song"
                         type="file"
-                        accept=".mp3"
+                        accept="audio/mpeg,.mp3"
                         disabled={isLoading}
                         {...register('song', {required: true})}
                     />
@@ -160,7 +174,7 @@ const UploadModal = () => {
                     <Input
                         id="image"
                         type="file"
-                        accept="image/*"
+                        accept={IMAGE_ACCEPT}
                         disabled={isLoading}
                         {...register('image', {required: true})}
                     />

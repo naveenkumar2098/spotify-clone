@@ -7,7 +7,8 @@ import Button from "@/components/button";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Input from "@/components/input";
 import toast from "react-hot-toast";
-import uniqid from "uniqid";
+import uniqid from "uniqid"
+import { IMAGE_ACCEPT, validateImageFile } from "@/libs/validateFile";;
 import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const AccountContent = () => {
@@ -48,6 +49,11 @@ const AccountContent = () => {
             const avatarFile = values.avatar?.[0];
 
             if (avatarFile && user) {
+                const validationError = validateImageFile(avatarFile);
+                if (validationError) {
+                    toast.error(validationError);
+                    return;
+                }
                 const uniqueId = uniqid();
                 const { data: imageData, error: imageError } = await supabaseClient
                     .storage
@@ -139,7 +145,7 @@ const AccountContent = () => {
                         <Input
                             id="avatar"
                             type="file"
-                            accept="image/*"
+                            accept={IMAGE_ACCEPT}
                             disabled={loading || isLoading}
                             {...register('avatar')}
                         />
