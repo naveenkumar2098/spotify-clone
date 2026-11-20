@@ -4,13 +4,12 @@ A premium, production-ready audio streaming platform built to emulate the core f
 
 ## 🚀 Tech Stack
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Library**: [React 18](https://react.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Database & Auth**: [Supabase](https://supabase.com/) (PostgreSQL)
+- **Database & Auth**: [Supabase](https://supabase.com/) (PostgreSQL) via [`@supabase/ssr`](https://supabase.com/docs/guides/auth/server-side/nextjs)
 - **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
-- **Payments**: [Stripe](https://stripe.com/)
 - **Audio Engine**: [Howler.js](https://howlerjs.com/) (via `use-sound`)
 - **Animations**: [AnimeJS](https://animejs.com/)
 - **Drag & Drop**: [@dnd-kit](https://dndkit.com/)
@@ -37,15 +36,14 @@ A premium, production-ready audio streaming platform built to emulate the core f
 - **Micro-Animations**: Utilizes `anime.js` to deliver tactile, hardware-accelerated animations (staggered grid reveals, spring-physics buttons, smooth slide-up modals) that don't block the React render cycle.
 - **Skeleton Loading**: Graceful loading states (Boneyards) to eliminate layout shift and improve perceived performance during data fetching.
 
-### 💳 Stripe Subscriptions
-- Premium gatekeeping integrated with Stripe checkout sessions and webhooks to manage user subscription tiers securely in the database.
+### 💳 Subscriptions (not yet implemented)
+- The database schema and TypeScript types include Stripe-style tables (`customers`, `products`, `prices`, `subscriptions`), but there are currently **no Stripe checkout or webhook routes**. Subscription UI buttons are placeholders.
 
 ## 🛠️ Local Development
 
 ### Prerequisites
-- Node.js 18.17 or later
+- Node.js 24 LTS (see `.nvmrc`; minimum supported is 20.9)
 - A Supabase Project
-- A Stripe Account
 
 ### 1. Clone the repository
 ```bash
@@ -63,18 +61,21 @@ Create a `.env.local` file in the root directory and populate it with your keys:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
 ```
 
-### 4. Run the development server
+### 4. Apply database security policies
+Row Level Security policies, storage policies and bucket limits live in `supabase/migrations/20261120000000_rls_hardening.sql`. It is **not applied automatically**: review it, then run it with `supabase db push` or the Supabase SQL editor.
+
+### 5. Run the development server
 ```bash
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the application running.
+
+## 🔒 Security & CI
+- Auth uses `@supabase/ssr`; `proxy.ts` refreshes the session on each request.
+- Uploads are validated client-side (MP3 up to 20MB, PNG/JPEG/WebP images up to 5MB) and storage paths are sanitized; enforce the same limits server-side with the migration above.
+- GitHub Actions (`.github/workflows/ci.yml`) runs lint, `npm audit --audit-level=high` and the build; Dependabot is configured for npm and GitHub Actions.
 
 ## 🏗️ Future Roadmap
 - [ ] User Profiles & Follows

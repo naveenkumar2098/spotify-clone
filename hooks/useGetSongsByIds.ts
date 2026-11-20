@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Song } from "@/types";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@/providers/SupabaseProviders";
 
 const useGetSongsByIds = (ids: string[]) => {
     const [isLoading, setIsLoading] = useState(false);

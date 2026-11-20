@@ -1,6 +1,6 @@
 "use client";
 
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@/providers/SupabaseProviders";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSessionContext, useSupabaseClient } from "@/providers/SupabaseProviders";
 import Modal from "./modal";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";

@@ -5,7 +5,7 @@ import Modal from "./modal";
 import Input from "./input";
 import Button from "./button";
 import toast from "react-hot-toast";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@/providers/SupabaseProviders";
 import useResetPasswordModal from "@/hooks/useResetPasswordModal";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";

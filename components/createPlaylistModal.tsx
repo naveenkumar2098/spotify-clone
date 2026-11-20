@@ -1,6 +1,8 @@
 "use client";
 
 import uniqid from "uniqid"
+import sanitizeFileName from "@/libs/sanitizeFileName";
+import { IMAGE_ACCEPT, validateImageFile } from "@/libs/validateFile";
 import useCreatePlaylistModal from "@/hooks/useCreatePlaylistModal";
 import Modal from "./modal";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -9,7 +11,7 @@ import Input from "./input";
 import Button from "./button";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@/providers/SupabaseProviders";
 import { useRouter } from "next/navigation";
 
 const CreatePlaylistModal = () => {
@@ -43,6 +45,11 @@ const CreatePlaylistModal = () => {
             const imageFile = values.image?.[0];
 
             if (imageFile) {
+                const validationError = validateImageFile(imageFile);
+                if (validationError) {
+                    toast.error(validationError);
+                    return;
+                }
                 const uniqueId = uniqid();
                 const {
                     data: imageData,
@@ -50,7 +57,7 @@ const CreatePlaylistModal = () => {
                 } = await supabaseClient
                         .storage
                         .from('images')
-                        .upload(`playlist-${values.name}-${uniqueId}`, imageFile, {
+                        .upload(`playlist-${sanitizeFileName(values.name)}-${uniqueId}`, imageFile, {
                             cacheControl: '3600',
                             upsert: false
                         });
@@ -120,7 +127,7 @@ const CreatePlaylistModal = () => {
                     <Input
                         id="image"
                         type="file"
-                        accept="image/*"
+                        accept={IMAGE_ACCEPT}
                         disabled={isLoading}
                         {...register('image', {required: false})}
                     />
