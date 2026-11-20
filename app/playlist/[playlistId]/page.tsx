@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import { MdOutlineLibraryMusic } from "react-icons/md";
 import PlaylistContent from "./components/PlaylistContent";
 import Image from "next/image";
+import PlaylistActions from "@/components/playlistActions";
 
 export const revalidate = 0;
 
@@ -59,10 +60,20 @@ const Playlist = async ({ params }: PlaylistProps) => {
                             <h1 className="text-white text-4xl sm:text-5xl lg:text-7xl font-bold">
                                 {playlist.name}
                             </h1>
+                            <p className="text-sm text-neutral-300">
+                                {songs.length} {songs.length === 1 ? "song" : "songs"}
+                            </p>
                         </div>
                     </div>
                 </div>
             </Header>
+            <PlaylistActions
+                playlistId={playlist.id}
+                playlistName={playlist.name}
+                ownerId={playlist.user_id}
+                imagePath={playlist.image_path}
+                songs={songs}
+            />
             <PlaylistContent songs={songs} playlistId={playlist.id} />
         </div>
     )

@@ -121,7 +121,7 @@ create policy "products_select_public" on public.products
 
 -- -------------------------------------------------------------- storage
 -- Public read of the two buckets; writes only for signed-in users.
--- (update/delete on storage.objects get no policy => denied for clients.)
+-- (update gets no policy => denied for clients; delete is owner-only, below.)
 drop policy if exists "songs_bucket_public_read" on storage.objects;
 create policy "songs_bucket_public_read" on storage.objects
   for select using (bucket_id = 'songs');
@@ -137,6 +137,13 @@ create policy "songs_bucket_authenticated_insert" on storage.objects
 drop policy if exists "images_bucket_authenticated_insert" on storage.objects;
 create policy "images_bucket_authenticated_insert" on storage.objects
   for insert to authenticated with check (bucket_id = 'images');
+
+-- Uploaders may delete their own images (used when a playlist is deleted).
+-- owner_id is set by Storage to the uploading user's id.
+drop policy if exists "images_bucket_owner_delete" on storage.objects;
+create policy "images_bucket_owner_delete" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'images' and owner_id = (select auth.uid())::text);
 
 -- Server-side bucket limits (enforced by Storage regardless of client checks).
 -- These assume the buckets already exist; they only update them.
