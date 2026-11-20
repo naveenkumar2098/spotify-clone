@@ -1,4 +1,5 @@
 import { Song } from "@/types";
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { createClient } from "@/libs/supabase/server";
 
 const getSongsByUserId = async (): Promise<Song[]> => {
@@ -10,7 +11,10 @@ const getSongsByUserId = async (): Promise<Song[]> => {
     } = await supabase.auth.getUser();
 
     if(userError) {
-        console.log(userError.message);
+        // A missing session just means a logged-out visitor; only log real failures.
+        if (!isAuthSessionMissingError(userError)) {
+            console.error(userError.message);
+        }
         return [];
     }
 
